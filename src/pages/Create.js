@@ -32,9 +32,17 @@ const Create = () => {
         <label>Name</label>
         <input className="border border-black p-1" type="text" name="name" required />
         <label>Category</label>
-        <input className="border border-black p-1" type="text" name="category" required />
+        <select className="border border-black p-1" name="category" required >
+          <option value="sidewalkshed">Sidewalk Shed</option>
+          <option value="scaffold">Scaffold</option>
+          <option value="scaffold">Shoring</option>
+        </select>
         <label>Status</label>
-        <input className="border border-black p-1" type="text" name="status" required />
+        <select className="border border-black p-1" name="status" required >
+          <option value="completed">Completed</option>
+          <option value="inprogress">In Progress</option>
+          <option value="onhold">On Hold</option>
+        </select>
         <button className="border border-black px-2 py-1 bg-green-500 text-white mt-12" type="submit">
           Submit
         </button>
