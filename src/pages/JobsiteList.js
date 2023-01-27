@@ -11,6 +11,7 @@ const JobsiteList = () => {
   const [onHold, setOnHold] = useState(0);
   const [inProgress, setInProgress] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filter, setFilter] = useState("");
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -80,6 +81,18 @@ const JobsiteList = () => {
     const data = await response.json();
     if (response.ok) {
       alert("You created a new note succesfully!");
+      setTimeout(() => {
+        window.location.reload()
+      }, 1300)
+    }
+  }
+
+  async function search(e) {
+    e.preventDefault();
+    if (e.target.value) {
+      const response = await fetch(`http://localhost:4000/api/search/${e.target.value}`);
+      const data = await response.json();
+      setFilter(data);
     }
   }
 
@@ -93,21 +106,25 @@ const JobsiteList = () => {
       <button onClick={showModal} className="border border-black px-2 py-1 bg-blue-500 text-white mx-auto mt-5">
         Add a new jobsite
       </button>
+      <form onSubmit={search} className='flex mt-2'>
+        <input onChange={search} type='text' placeholder='Search...' name='search' className='border border-black p-1' />
+        <button className='ml-2 bg-blue-500 text-white px-2 py-1 border border-black' ty1 border border-blacke='submit'>Search</button>
+      </form>
       <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <form className="mt-12 flex flex-col --5 mx-auto" onSubmit={create}>
           <label>Name</label>
           <input className="border border-black p-1" type="text" name="name" required />
           <label>Category</label>
           <select className="border border-black p-1" name="category" required >
-            <option value="sidewalkshed">Sidewalk Shed</option>
-            <option value="scaffold">Scaffold</option>
-            <option value="scaffold">Shoring</option>
+            <option value="Sidewalk Shed">Sidewalk Shed</option>
+            <option value="Scaffold">Scaffold</option>
+            <option value="Shoring">Shoring</option>
           </select>
           <label>Status</label>
           <select className="border border-black p-1" name="status" required >
-            <option value="completed">Completed</option>
-            <option value="inprogress">In Progress</option>
-            <option value="onhold">On Hold</option>
+            <option value="Completed">Completed</option>
+            <option value="In Progress">In Progress</option>
+            <option value="On Hold">On Hold</option>
           </select>
           <button className="border border-black px-2 py-1 bg-green-500 text-white mt-12" type="submit">
             Submit
@@ -120,14 +137,25 @@ const JobsiteList = () => {
       </div>
       <div className="flex">
         <div className="flex flex-col mx-auto mt-5 w-[800px]">
-          {jobsites.map((jobsite) => (
-            <div className="flex space-x-5 justify-between">
-              <button data-number={jobsite.id} onClick={navigateToSite}>
-                {jobsite.name}
-              </button>
-              <span>{jobsite.status}</span>
-            </div>
-          ))}
+          {(filter) ? filter.map(jobsite => {
+            return (
+              <div className="flex space-x-5 justify-between">
+                <button data-number={jobsite.id} onClick={navigateToSite}>
+                  {jobsite.name}
+                </button>
+                <span>{jobsite.status}</span>
+              </div>
+            )
+          }) : jobsites.map(jobsite => {
+            return (
+              <div className="flex space-x-5 justify-between">
+                <button data-number={jobsite.id} onClick={navigateToSite}>
+                  {jobsite.name}
+                </button>
+                <span>{jobsite.status}</span>
+              </div>
+            )
+          })}
         </div>
       </div>
     </div>

@@ -9,6 +9,7 @@ const Jobsite = () => {
   const [items, setItems] = useState("");
   const [visibleItems, setVisibleItems] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filter, setFilter] = useState("");
   const id = localStorage.getItem("id");
 
   const showModal = (e) => {
@@ -62,6 +63,18 @@ const Jobsite = () => {
     const data = await response.json();
     if (response.ok) {
       alert(`You updated the item with id:${id} succesfully!`)
+      setTimeout(() => {
+        window.location.reload()
+      }, 1300)
+    }
+  }
+
+  async function search(e) {
+    e.preventDefault();
+    if (e.target.value) {
+      const response = await fetch(`http://localhost:4000/api/search/${item_id}/items/${e.target.value}`);
+      const data = await response.json();
+      setFilter(data);
     }
   }
 
@@ -84,44 +97,50 @@ const Jobsite = () => {
             })
             : null}
         </div>
-        <table className="text-center border border-black table-auto w-[800px] h-[600px] overflow:scroll ml-48">
-          <thead>
-            <tr>
-              <th>Nr</th>
-              <th>Item</th>
-              <th>Quantity</th>
-              <th>Description</th>
-              <th>Notes</th>
-            </tr>
-          </thead>
-          <tbody>
-            {(items && visibleItems) ? items.map((item, i) => {
-              return (<tr key={i}>
-                <td>{item.id}</td>
-                <td className="hover:cursor-pointer" data-number={item.id} onClick={showModal}>{item.item}</td>
-                <td>{item.quantity}</td>
-                <td>{item.description}</td>
-                <td>{item.notes}</td>
+        <div>
+          <form onSubmit={search} className='flex justify-center mb-2'>
+            <input onChange={search} type='text' placeholder='Search your items...' name='search' className='border border-black p-1' />
+            <button className='ml-2 bg-blue-500 text-white px-2 py-1 border border-black' ty1 border border-blacke='submit'>Search</button>
+          </form>
+          <table className="text-center border border-black table-auto w-[800px] h-[600px] overflow:scroll ml-48">
+            <thead>
+              <tr>
+                <th>Nr</th>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Description</th>
+                <th>Notes</th>
               </tr>
-              )
-            }) : null
-            }
-          </tbody>
-          <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-            <form onSubmit={update} className="flex flex-col px-3 bg-gray-200 border border-black gap-y-2">
-              <label>Item</label>
-              <input type='text' name='item' />
-              <label>Quantity</label>
-              <input type='number' name='quantity' />
-              <label>Description</label>
-              <input type='text' name='description' />
-              <label>Notes</label>
-              <input type='text' name='notes' />
-              <button className="bg-green-500 text-white px-5 py-2" type='submit'>Update</button>
-            </form>
-          </Modal>
-        </table>
+            </thead>
+            <tbody>
+              {(items && visibleItems) ? items.map((item, i) => {
+                return (<tr key={i}>
+                  <td>{item.id}</td>
+                  <td className="hover:cursor-pointer" data-number={item.id} onClick={showModal}>{item.item}</td>
+                  <td>{item.quantity}</td>
+                  <td>{item.description}</td>
+                  <td>{item.notes}</td>
+                </tr>
+                )
+              }) : null
+              }
+            </tbody>
 
+            <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+              <form onSubmit={update} className="flex flex-col px-3 bg-gray-200 border border-black gap-y-2">
+                <label>Item</label>
+                <input type='text' name='item' />
+                <label>Quantity</label>
+                <input type='number' name='quantity' />
+                <label>Description</label>
+                <input type='text' name='description' />
+                <label>Notes</label>
+                <input type='text' name='notes' />
+                <button className="bg-green-500 text-white px-5 py-2" type='submit'>Update</button>
+              </form>
+            </Modal>
+          </table>
+        </div>
       </div>
     </div >
   );
