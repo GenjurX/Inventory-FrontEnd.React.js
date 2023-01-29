@@ -51,7 +51,7 @@ const JobsiteList = () => {
       }
     }
     counter();
-  }, []);
+  }, [jobsites]);
 
 
 
@@ -80,7 +80,7 @@ const JobsiteList = () => {
     });
     const data = await response.json();
     if (response.ok) {
-      alert("You created a new note succesfully!");
+      alert("You created a new jobsite succesfully!");
       setTimeout(() => {
         window.location.reload()
       }, 1300)
