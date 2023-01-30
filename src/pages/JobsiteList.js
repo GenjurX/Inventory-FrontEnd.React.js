@@ -12,6 +12,8 @@ const JobsiteList = () => {
   const [inProgress, setInProgress] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filter, setFilter] = useState("");
+  const [color, setColor] = useState({ backgroundColor: 'yellow', color: 'white' });
+
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -47,12 +49,12 @@ const JobsiteList = () => {
         } else if (jobsites[i].status === "In Progress") {
           inProgressCounter++;
           setInProgress(inProgressCounter);
+
         }
       }
     }
     counter();
   }, [jobsites]);
-
 
 
   function navigateToSite(e) {
@@ -97,68 +99,83 @@ const JobsiteList = () => {
   }
 
   return (
-    <div className="p-12">
-      <div className="w-full flex space-x-2 justify-center">
-        <span className="px-24 py-2 bg-yellow-300 text-white"> {completed}</span>
-        <span className="px-24 py-2 bg-red-300 text-white"> {onHold}</span>
-        <span className="px-24 py-2 bg-green-300 text-white"> {inProgress}</span>
+    <div className="px-5">
+      <div className="w-full flex space-x-2 text-center p-2 border border-grey-500 rounded-lg mt-3">
+        <span className="px-24 py-5 bg-yellow-300 text-white w-[100%]">Completed: {completed}</span>
+        <span className="px-24 py-5 bg-red-500 text-white w-[100%]">On Hold: {onHold}</span>
+        <span className="px-24 py-5 bg-green-500 text-white w-[100%]">In Progress: {inProgress}</span>
       </div>
-      <button onClick={showModal} className="border border-black px-2 py-1 bg-blue-500 text-white mx-auto mt-5">
-        Add a new jobsite
-      </button>
-      <form onSubmit={search} className='flex mt-2'>
-        <input onChange={search} type='text' placeholder='Search...' name='search' className='border border-black p-1' />
-        <button className='ml-2 bg-blue-500 text-white px-2 py-1 border border-black' ty1 border border-blacke='submit'>Search</button>
-      </form>
-      <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <form className="mt-12 flex flex-col --5 mx-auto" onSubmit={create}>
-          <label>Name</label>
-          <input className="border border-black p-1" type="text" name="name" required />
-          <label>Category</label>
-          <select className="border border-black p-1" name="category" required >
-            <option value="Sidewalk Shed">Sidewalk Shed</option>
-            <option value="Scaffold">Scaffold</option>
-            <option value="Shoring">Shoring</option>
-          </select>
-          <label>Status</label>
-          <select className="border border-black p-1" name="status" required >
-            <option value="Completed">Completed</option>
-            <option value="In Progress">In Progress</option>
-            <option value="On Hold">On Hold</option>
-          </select>
-          <button className="border border-black px-2 py-1 bg-green-500 text-white mt-12" type="submit">
+      <div className="flex items-center mt-5 justify-end">
+
+        <form>
+          <input onChange={search} type='text' placeholder='Search...' name='search' className='border border-black p-1' />
+        </form>
+        <button onClick={showModal} className="border border-green-500 rounded-lg px-10 py-1 bg-green-500 text-white ml-3">
+          Create
+        </button>
+      </div>
+      <Modal title="Add new jobsite" open={isModalOpen} onOk={create} onCancel={handleCancel}>
+        <form className="mt-5 flex flex-col mx-auto" onSubmit={create}>
+          <label className="font-bold">Name</label>
+          <input className="border border-black p-1 bg-gray-100" type="text" name="name" placeholder="Enter the name" required />
+          <div className="flex w-full mt-3">
+            <div className="flex flex-col">
+              <label className="font-bold">Category</label>
+              <select className="border border-black p-2 w-64 bg-gray-100" name="category" required >
+                <option value="Sidewalk Shed">Sidewalk Shed</option>
+                <option value="Scaffold">Scaffold</option>
+                <option value="Shoring">Shoring</option>
+              </select>
+            </div>
+            <div className="flex flex-col ml-6 w-48">
+              <label className="font-bold">Status</label>
+              <select className="border border-black p-2 bg-gray-100" name="status" required >
+                <option value="Completed">Completed</option>
+                <option value="In Progress">In Progress</option>
+                <option value="On Hold">On Hold</option>
+              </select>
+            </div>
+          </div>
+          <button className="px-2 py-1 bg-green-500 text-white mt-12" type="submit">
             Submit
           </button>
         </form>
       </Modal>
-      <div className="w-[800px] flex justify-between mx-auto mt-24">
-        <span className="font-bold">Jobsite name</span>
-        <span className="font-bold">Status</span>
-      </div>
       <div className="flex">
-        <div className="flex flex-col mx-auto mt-5 w-[800px]">
-          {(filter) ? filter.map(jobsite => {
-            return (
-              <div className="flex space-x-5 justify-between">
-                <button data-number={jobsite.id} onClick={navigateToSite}>
-                  {jobsite.name}
-                </button>
-                <span>{jobsite.status}</span>
-              </div>
-            )
-          }) : jobsites.map(jobsite => {
-            return (
-              <div className="flex space-x-5 justify-between">
-                <button data-number={jobsite.id} onClick={navigateToSite}>
-                  {jobsite.name}
-                </button>
-                <span>{jobsite.status}</span>
-              </div>
-            )
-          })}
-        </div>
+        <table className="table-auto mt-5 w-[100%]">
+          <thead>
+            <tr className="font-bold">
+              <th>Jobsite name</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {(filter) ? filter.map((jobsite, i) => {
+              return (
+                <tr key={i} className="even:bg-white odd:bg-gray-200 text-center">
+
+                  <td className="text-blue-600 font-bold text-sm"><button data-number={jobsite.id} onClick={navigateToSite}>
+                    {jobsite.name} </button>
+                  </td>
+                  <td><span>{jobsite.status}</span></td>
+                </tr>
+              )
+            })
+              : jobsites.map((jobsite, i) => {
+                return (
+                  <tr key={i} className="even:bg-white odd:bg-gray-200 text-center">
+
+                    <td className="text-blue-600 font-bold text-sm"><button data-number={jobsite.id} onClick={navigateToSite}>
+                      {jobsite.name} </button>
+                    </td>
+                    <td><span>{jobsite.status}</span></td>
+                  </tr>
+                )
+              })}
+          </tbody>
+        </table>
       </div>
-    </div>
+    </div >
   );
 };
 

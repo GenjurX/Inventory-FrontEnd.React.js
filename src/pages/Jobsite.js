@@ -10,6 +10,7 @@ const Jobsite = () => {
   const [visibleItems, setVisibleItems] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filter, setFilter] = useState("");
+  const [itemsToRender, setItemsToRender] = useState("");
   const id = localStorage.getItem("id");
 
   const showModal = (e) => {
@@ -39,7 +40,17 @@ const Jobsite = () => {
     }
     fetchItems();
 
-  }, []);
+    function renderItems() {
+      if (!filter) {
+        setItemsToRender(items);
+      }
+      else {
+        setItemsToRender(filter)
+      }
+    }
+    renderItems();
+
+  }, [items, filter, jobsite]);
 
   function setVisible() {
     setVisibleItems(true);
@@ -49,11 +60,11 @@ const Jobsite = () => {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
-    const title = formData.get('title');
-    const category = formData.get('category');
-    const date = formData.get('date');
+    const item = formData.get('item');
+    const quantity = formData.get('quantity');
     const description = formData.get('description');
-    const values = { title, category, date, description };
+    const notes = formData.get('notes');
+    const values = { item, quantity, description, notes };
 
     const response = await fetch(`http://localhost:4000/api/item/${item_id}`, {
       method: 'PUT', headers: {
@@ -61,6 +72,7 @@ const Jobsite = () => {
       }, body: JSON.stringify(values)
     })
     const data = await response.json();
+    console.log(data);
     if (response.ok) {
       alert(`You updated the item with id:${id} succesfully!`)
       setTimeout(() => {
@@ -72,7 +84,7 @@ const Jobsite = () => {
   async function search(e) {
     e.preventDefault();
     if (e.target.value) {
-      const response = await fetch(`http://localhost:4000/api/search/${item_id}/items/${e.target.value}`);
+      const response = await fetch(`http://localhost:4000/api/search/${id}/items/${e.target.value}`);
       const data = await response.json();
       setFilter(data);
     }
@@ -113,10 +125,10 @@ const Jobsite = () => {
               </tr>
             </thead>
             <tbody>
-              {(items && visibleItems) ? items.map((item, i) => {
+              {(itemsToRender && visibleItems) ? itemsToRender.map((item, i) => {
                 return (<tr key={i}>
                   <td>{item.id}</td>
-                  <td className="hover:cursor-pointer" data-number={item.id} onClick={showModal}>{item.item}</td>
+                  <td className="hover:cursor-pointer" data-number={item.id} onDoubleClick={showModal}>{item.item}</td>
                   <td>{item.quantity}</td>
                   <td>{item.description}</td>
                   <td>{item.notes}</td>
@@ -126,17 +138,23 @@ const Jobsite = () => {
               }
             </tbody>
 
-            <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-              <form onSubmit={update} className="flex flex-col px-3 bg-gray-200 border border-black gap-y-2">
-                <label>Item</label>
-                <input type='text' name='item' />
-                <label>Quantity</label>
-                <input type='number' name='quantity' />
-                <label>Description</label>
-                <input type='text' name='description' />
-                <label>Notes</label>
-                <input type='text' name='notes' />
-                <button className="bg-green-500 text-white px-5 py-2" type='submit'>Update</button>
+            <Modal title="Update item" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+              <form onSubmit={update} className="flex flex-col px-3 bg-white gap-y-2">
+                <div className="flex justify-between">
+                  <div className="flex flex-col">
+                    <label className="font-bold">Item</label>
+                    <input type='text' name='item' className="border border-black p-1 w-52" placeholder="Item" />
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="font-bold">Quantity</label>
+                    <input type='number' name='quantity' className="border border-black p-1 w-52" placeholder="Quantity" />
+                  </div>
+                </div>
+                <label className="font-bold">Description</label>
+                <textarea type='text' name='description' className="border border-black p-1" placeholder="Description" />
+                <label className="font-bold">Notes</label>
+                <textarea type='text' name='notes' className="border border-black p-1" placeholder="Notes" />
+                <button className="mt-3 bg-green-500 text-white px-5 py-2" type='submit' >Update</button>
               </form>
             </Modal>
           </table>
