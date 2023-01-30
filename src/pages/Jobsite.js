@@ -34,7 +34,7 @@ const Jobsite = () => {
     }
     sites();
     async function fetchItems() {
-      const response = await fetch(`http://localhost:4000/api/sites/${id}/items`);
+      const response = await fetch(`http://localhost:4000/api/items`);
       const data = await response.json();
       setItems(data);
     }
@@ -45,7 +45,8 @@ const Jobsite = () => {
         setItemsToRender(items);
       }
       else {
-        setItemsToRender(filter)
+        if (filter)
+          setItemsToRender(filter);
       }
     }
     renderItems();
@@ -84,7 +85,7 @@ const Jobsite = () => {
   async function search(e) {
     e.preventDefault();
     if (e.target.value) {
-      const response = await fetch(`http://localhost:4000/api/search/${id}/items/${e.target.value}`);
+      const response = await fetch(`http://localhost:4000/api/search/items/${e.target.value}`);
       const data = await response.json();
       setFilter(data);
     }
@@ -115,9 +116,13 @@ const Jobsite = () => {
           <form className=' ml-10'>
             <input onChange={search} type='text' placeholder='Search your items...' name='search' className='border border-gray-200 rounded-lg mb-2 p-1' />
           </form>
-          <button onClick={() => setVisibleItems(false)}>X</button>
+          <button onClick={() => {
+            setVisibleItems(false);
+            setFilter("");
+          }
+          }>X</button>
         </div>
-        <table className="text-center table-auto h-auto w-full border border-gray-300 overflow:scroll ml-10">
+        <table className="text-center table-auto w-full border border-gray-300 ml-10">
           <thead>
             <tr>
               <th>Nr</th>
