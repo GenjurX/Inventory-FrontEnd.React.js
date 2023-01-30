@@ -92,75 +92,78 @@ const Jobsite = () => {
 
 
   return (
-    <div className="p-12">
-      <Link to="/" className="border border-black px-2 py-1 bg-green-500 text-white mx-auto">
-        Go back
-      </Link>
-      <div className="flex mt-12">
-        <div>
+    <div className="p-12 flex">
+      <div className="w-[400px]  h-[500px] relative border border-gray-300 p-5 mt-10">
+        <div className="text-center w-full">
           {jobsite
             ? jobsite.map((jobsite) => {
               return (
-                <div className="space-x-3 flex flex-col justify-center gap-y-3">
-                  <span className="border-b border-black">{jobsite.name}</span>
-                  <button onClick={setVisible} className="bg-green-500 text-white px-5 py-2">{jobsite.category}</button>
+                <div className="flex flex-col justify-center gap-y-3">
+                  <span className="bg-gray-200 py-2 rounded-lg w-[100%]">{jobsite.name}</span>
+                  <button onClick={setVisible} className="bg-gray-200 py-2 rounded-lg w-[100%]">{jobsite.category}</button>
                 </div>
               );
             })
             : null}
         </div>
-        <div>
-          <form onSubmit={search} className='flex justify-center mb-2'>
-            <input onChange={search} type='text' placeholder='Search your items...' name='search' className='border border-black p-1' />
-            <button className='ml-2 bg-blue-500 text-white px-2 py-1 border border-black' ty1 border border-blacke='submit'>Search</button>
-          </form>
-          <table className="text-center border border-black table-auto w-[800px] h-[600px] overflow:scroll ml-48">
-            <thead>
-              <tr>
-                <th>Nr</th>
-                <th>Item</th>
-                <th>Quantity</th>
-                <th>Description</th>
-                <th>Notes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {(itemsToRender && visibleItems) ? itemsToRender.map((item, i) => {
-                return (<tr key={i}>
-                  <td>{item.id}</td>
-                  <td className="hover:cursor-pointer" data-number={item.id} onDoubleClick={showModal}>{item.item}</td>
-                  <td>{item.quantity}</td>
-                  <td>{item.description}</td>
-                  <td>{item.notes}</td>
-                </tr>
-                )
-              }) : null
-              }
-            </tbody>
-
-            <Modal title="Update item" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-              <form onSubmit={update} className="flex flex-col px-3 bg-white gap-y-2">
-                <div className="flex justify-between">
-                  <div className="flex flex-col">
-                    <label className="font-bold">Item</label>
-                    <input type='text' name='item' className="border border-black p-1 w-52" placeholder="Item" />
-                  </div>
-                  <div className="flex flex-col">
-                    <label className="font-bold">Quantity</label>
-                    <input type='number' name='quantity' className="border border-black p-1 w-52" placeholder="Quantity" />
-                  </div>
-                </div>
-                <label className="font-bold">Description</label>
-                <textarea type='text' name='description' className="border border-black p-1" placeholder="Description" />
-                <label className="font-bold">Notes</label>
-                <textarea type='text' name='notes' className="border border-black p-1" placeholder="Notes" />
-                <button className="mt-3 bg-green-500 text-white px-5 py-2" type='submit' >Update</button>
-              </form>
-            </Modal>
-          </table>
-        </div>
+        <Link to="/" className="absolute bottom-1 left-[38%] px-5 py-1 bg-blue-500 text-white text-center">
+          Go back
+        </Link>
       </div>
-    </div >
+      <div className="w-[800px] h-[500px]">
+        <div className="flex justify-between">
+          <form className=' ml-10'>
+            <input onChange={search} type='text' placeholder='Search your items...' name='search' className='border border-gray-200 rounded-lg mb-2 p-1' />
+          </form>
+          <button onClick={() => setVisibleItems(false)}>X</button>
+        </div>
+        <table className="text-center table-auto h-auto w-full border border-gray-300 overflow:scroll ml-10">
+          <thead>
+            <tr>
+              <th>Nr</th>
+              <th>Item</th>
+              <th>Quantity</th>
+              <th>Description</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {(itemsToRender && visibleItems) ? itemsToRender.map((item, i) => {
+              return (<tr key={i} className="even:bg-white odd:bg-gray-200">
+                <td>{item.id}</td>
+                <td className="hover:cursor-pointer" data-number={item.id} onDoubleClick={showModal}>{item.item}</td>
+                <td>{item.quantity}</td>
+                <td>{item.description}</td>
+                <td>{item.notes}</td>
+              </tr>
+              )
+            }) : null
+            }
+          </tbody>
+
+          <Modal title="Update item" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+            <form onSubmit={update} className="flex flex-col px-3 bg-white gap-y-2">
+              <div className="flex justify-between">
+                <div className="flex flex-col">
+                  <label className="font-bold">Item</label>
+                  <input type='text' name='item' className="border border-black p-1 w-52" placeholder="Item" required />
+                </div>
+                <div className="flex flex-col">
+                  <label className="font-bold">Quantity</label>
+                  <input type='number' name='quantity' className="border border-black p-1 w-52" placeholder="Quantity" required />
+                </div>
+              </div>
+              <label className="font-bold">Description</label>
+              <textarea type='text' name='description' className="border border-black p-1" placeholder="Description" required />
+              <label className="font-bold">Notes</label>
+              <textarea type='text' name='notes' className="border border-black p-1" placeholder="Notes" required />
+              <button className="mt-3 bg-green-500 text-white px-5 py-2" type='submit' >Update</button>
+            </form>
+          </Modal>
+        </table>
+      </div>
+    </div>
+
   );
 };
 
