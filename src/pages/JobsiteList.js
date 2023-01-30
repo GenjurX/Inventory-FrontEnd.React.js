@@ -114,7 +114,7 @@ const JobsiteList = () => {
           Create
         </button>
       </div>
-      <Modal title="Add new jobsite" open={isModalOpen} onOk={create} onCancel={handleCancel}>
+      <Modal title="Add new jobsite" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <form className="mt-5 flex flex-col mx-auto" onSubmit={create}>
           <label className="font-bold">Name</label>
           <input className="border border-black p-1 bg-gray-100" type="text" name="name" placeholder="Enter the name" required />
